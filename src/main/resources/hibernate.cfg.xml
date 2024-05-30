@@ -4,6 +4,11 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-<!--        <mapping class="" />-->
+        <mapping class="org.ecf_mai.entity.Customer" />
+        <mapping class="org.ecf_mai.entity.Product" />
+        <mapping class="org.ecf_mai.entity.Invoice" />
+        <mapping class="org.ecf_mai.entity.InvoiceProduct" />
+
+
     </session-factory>
 </hibernate-configuration>
