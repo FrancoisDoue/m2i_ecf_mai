@@ -1,7 +1,7 @@
 package org.ecf_mai.constant;
 
-public enum StatusType {
+public enum Status {
     IN_PROGRESS,
-    COMPLETED,
+    CONFIRMED,
     CANCELED
 }

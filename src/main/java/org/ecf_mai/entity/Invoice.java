@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ecf_mai.constant.StatusType;
+import org.ecf_mai.constant.Status;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
@@ -17,29 +18,30 @@ public class Invoice implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private StatusType status;
+    private Status status;
 
     @Column(name = "created_at", columnDefinition = "timestamp")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "invoice")
+    @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<InvoiceProduct> invoiceProducts;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Customer customer;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        status = StatusType.IN_PROGRESS;
+        status = Status.IN_PROGRESS;
     }
 
     @Override
     public String toString() {
-        return "Invoice{" +
-                "id=" + id +
-                ", status=" + status +
-                ", createdAt=" + createdAt +
-                '}';
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm");
+        StringBuilder sb = new StringBuilder();
+        invoiceProducts.forEach(ip -> sb.append("\t").append(ip.toString()).append("\n"));
+        return "["+ id + "] Commande pour : " + customer.getFirstname() + " " + customer.getLastname() + " | " +
+                " statut : " + status +
+                " - Créée le " + createdAt.format(df) +"\n" + sb ;
     }
 }

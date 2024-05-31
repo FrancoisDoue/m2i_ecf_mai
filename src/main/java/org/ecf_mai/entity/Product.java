@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ecf_mai.constant.CategoryType;
-import org.ecf_mai.constant.SizeType;
+import org.ecf_mai.constant.Category;
+import org.ecf_mai.constant.Size;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,8 +19,8 @@ public class Product implements Serializable {
 
     private String description;
 
-    private CategoryType category;
-    private SizeType size;
+    private Category category;
+    private Size size;
 
     private double price;
     private int quantity;
@@ -30,13 +30,8 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", category=" + category +
-                ", size=" + size +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                '}';
+        return "[" + id + "] - " + description + " - "
+                + category + " - taille " + size + " - "
+                + price + "€ - " + quantity + " en stock";
     }
 }

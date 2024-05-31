@@ -1,6 +1,6 @@
 package org.ecf_mai.constant;
 
-public enum CategoryType {
+public enum Category {
     CHILD,
     MAN,
     WOMAN

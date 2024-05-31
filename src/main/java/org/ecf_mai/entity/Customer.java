@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
@@ -28,11 +27,7 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "[" + id + "] " + firstname + " " + lastname +
+                " email : " + email;
     }
 }

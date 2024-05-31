@@ -19,9 +19,14 @@ public class InvoiceProduct implements Serializable {
     @PrimaryKeyJoinColumn(name = "invoice_id")
     private Invoice invoice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @PrimaryKeyJoinColumn(name = "product_id")
     private Product product;
 
     int quantity;
+
+    @Override
+    public String toString() {
+        return product + " [Quantité : " + quantity + "]";
+    }
 }

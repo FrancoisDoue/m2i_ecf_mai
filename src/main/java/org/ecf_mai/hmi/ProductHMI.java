@@ -1,7 +1,7 @@
 package org.ecf_mai.hmi;
 
-import org.ecf_mai.constant.CategoryType;
-import org.ecf_mai.constant.SizeType;
+import org.ecf_mai.constant.Category;
+import org.ecf_mai.constant.Size;
 import org.ecf_mai.entity.Product;
 import org.ecf_mai.repository.impl.ProductRepository;
 
@@ -26,16 +26,15 @@ public class ProductHMI implements HMIInterface{
                     - - - - Gestion des produits - - - -
                     1. Afficher les produits
                     2. Ajouter un produit
-                    3. Modifier un produit [en cours]
-                    4. Supprimer un produit
-                    [0]. Quit
+                    3. Supprimer un produit
+                    ------------------------------------
+                    [0]. Menu précédent
                     """);
             try {
                 switch (promptInteger()) {
                     case 1 -> pr.getAll().forEach(System.out::println);
                     case 2 -> createProduct();
-                    case 3 -> {}
-                    case 4 -> deleteProduct();
+                    case 3 -> deleteProduct();
                     case 0 -> {
                         return;
                     }
@@ -67,7 +66,7 @@ public class ProductHMI implements HMIInterface{
         while (true) {
             try {
                 System.out.println("Catégorie: \n[1] Enfant | [2] Homme | [3] Femme");
-                p.setCategory(CategoryType.values()[promptInteger()-1]);
+                p.setCategory(Category.values()[promptInteger()-1]);
                 break;
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.out.println("Saisie invalide");
@@ -76,7 +75,7 @@ public class ProductHMI implements HMIInterface{
         while (true) {
             try {
                 System.out.println("Taille: \n[1] XS | [2] S | [3] M | [4] L | [5] XL | [6] XXL ");
-                p.setSize(SizeType.values()[promptInteger()-1]);
+                p.setSize(Size.values()[promptInteger()-1]);
                 System.out.println(p.getSize());
                 break;
             } catch (ArrayIndexOutOfBoundsException e) {

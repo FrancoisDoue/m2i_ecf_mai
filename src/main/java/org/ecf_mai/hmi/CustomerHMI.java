@@ -6,12 +6,17 @@ import org.ecf_mai.entity.InvoiceProduct;
 import org.ecf_mai.entity.Product;
 import org.ecf_mai.repository.impl.CustomerRepository;
 import org.ecf_mai.repository.impl.InvoiceRepository;
+import org.ecf_mai.repository.impl.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class CustomerHMI implements HMIInterface {
+
+    private final CustomerRepository customerRepository = new CustomerRepository();
+    private final InvoiceRepository invoiceRepository = new InvoiceRepository();
+    private final ProductRepository productRepository = new ProductRepository();
 
     private static CustomerHMI INSTANCE;
     private CustomerHMI() {}
@@ -21,21 +26,20 @@ public class CustomerHMI implements HMIInterface {
         return INSTANCE;
     }
 
-    private final CustomerRepository cr = new CustomerRepository();
-    private final InvoiceRepository ir = new InvoiceRepository();
 
     @Override
     public void start() {
         while (true) {
             System.out.println("""
                     - - - - Gestion des Clients - - - -
-                    1. Consulter l'historique des clients [en cours]
+                    1. Consulter l'historique des clients
                     2. Ajouter un client
                     3. Modifier les informations d'un client
                     4. Supprimer un client
                     -----------------------------------
                     5. Enregistrer le produit d'un client
-                    [0]. Quit
+                    -----------------------------------
+                    [0]. Menu précédent
                     """);
             try {
                 switch (promptInteger()) {
@@ -56,8 +60,8 @@ public class CustomerHMI implements HMIInterface {
 
     public void showCustomerHistory() {
         Customer c = selectCustomer();
-        List<Invoice> invoices = ir.getInvoiceByCustomer(c);
-        invoices.forEach(i -> System.out.println(i + " -- TOTAL : " + ir.getTotalPrice(i)));
+        List<Invoice> invoices = invoiceRepository.getInvoiceByCustomer(c);
+        invoices.forEach(i -> System.out.println(i + " -- TOTAL : " + invoiceRepository.getTotalPrice(i)));
     }
 
     public void clientBuyProduct() {
@@ -77,12 +81,14 @@ public class CustomerHMI implements HMIInterface {
                     .product(p)
                     .quantity(quantity)
                     .build());
+            p.setQuantity(p.getQuantity() - quantity);
             System.out.println("Ajouter un autre produit ? [y/n]");
             if (promptStringNotEmpty().equalsIgnoreCase("n"))
                 break;
         }
-        if (ir.create(invoiceProducts, c)) {
+        if (invoiceRepository.create(invoiceProducts, c)) {
             System.out.println("Commande effectuée");
+            invoiceProducts.forEach(ip -> productRepository.update(ip.getProduct()));
         }
 
 
@@ -90,12 +96,12 @@ public class CustomerHMI implements HMIInterface {
 
     public Customer selectCustomer() throws RuntimeException {
         while (true) {
-            List<Customer> customerList = cr.getAll();
+            List<Customer> customerList = customerRepository.getAll();
             if (customerList.isEmpty())
                 throw new RuntimeException("Il n'y a aucun client enregistré");
             customerList.forEach(System.out::println);
             System.out.println("Sélectionnez l'identifiant client:");
-            Customer customer = cr.get(promptInteger());
+            Customer customer = customerRepository.get(promptInteger());
             if (customer != null)
                 return customer;
             System.out.println("Impossible de trouver ce client");
@@ -111,7 +117,7 @@ public class CustomerHMI implements HMIInterface {
         c.setLastname(promptStringNotEmpty());
         System.out.println("Adresse email : ");
         c.setEmail(promptStringNotEmpty());
-        System.out.println(cr.create(c));
+        System.out.println(customerRepository.create(c));
     }
 
     public void updateCustomer() throws RuntimeException {
@@ -130,7 +136,7 @@ public class CustomerHMI implements HMIInterface {
             c.setEmail(email);
         System.out.println("Voulez enregistrer ces modifications?\n" + c +"\n[y/n]");
         if (scanner.nextLine().equalsIgnoreCase("y")) {
-            cr.update(c);
+            customerRepository.update(c);
         }
     }
 
@@ -140,6 +146,6 @@ public class CustomerHMI implements HMIInterface {
         System.out.println("Voulez supprimer ce client?\n" + c +"\n[y/n]");
         Scanner sc = new Scanner(System.in);
         if (sc.nextLine().equalsIgnoreCase("y"))
-            cr.delete(c);
+            customerRepository.delete(c);
     }
 }

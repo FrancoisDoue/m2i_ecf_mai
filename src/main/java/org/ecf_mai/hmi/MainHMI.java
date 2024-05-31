@@ -8,11 +8,14 @@ public class MainHMI implements HMIInterface {
                     - - - - ECF - 30 mai 2024 - - - -
                     1. Gestion des produits
                     2. Gestion des clients
-                    [0]. Quit
+                    3. Gestion des commandes
+                    ---------------------------------
+                    [0]. Quitter l'application
                     """);
             switch (promptInteger()) {
                 case 1 -> ProductHMI.getInstance().start();
                 case 2 -> CustomerHMI.getInstance().start();
+                case 3 -> InvoiceHMI.getInstance().start();
                 case 0 -> {
                     return;
                 }
